@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "458557238580",
+    "project_id": "whatsapp-marketing-9",
+    "storage_bucket": "whatsapp-marketing-9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458557238580:android:ae225e5fc8ecbd0ea10961",
+        "android_client_info": {
+          "package_name": "com.example.bulkwamsg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458557238580-4vae220vgcdujq44b744vanptco5rkob.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANf3hWcq39_cay9ui6cN7pLa7yzZHtxiw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458557238580-4vae220vgcdujq44b744vanptco5rkob.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
