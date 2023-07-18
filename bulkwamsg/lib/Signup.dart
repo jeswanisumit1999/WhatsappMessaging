@@ -83,6 +83,7 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: const Color(0xFFf5f5f5),
       body: SafeArea(
@@ -100,8 +101,14 @@ class _SignupState extends State<Signup> {
                     GestureDetector(
                         onTap:(){
                           setState(() {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Login()));
-                          });
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) => Login(),
+                                transitionDuration: const Duration(seconds: 0),
+                              ),
+                            );
+                            });
                         },
                         child: _menuItem('Sign In', false)),
                     GestureDetector(
@@ -119,55 +126,58 @@ class _SignupState extends State<Signup> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 360,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Sign In to \nMy Application',
-                            style: TextStyle(
-                              fontSize: 45,
-                              fontWeight: FontWeight.bold,
+                    Visibility(
+                      visible: MediaQuery.of(context).size.width > 900,
+                      child: Container(
+                        width: 360,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Sign In to \nMy Application',
+                              style: TextStyle(
+                                fontSize: 45,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const Text(
-                            "If you don't have an account",
-                            style: TextStyle(
-                                color: Colors.black54, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                "You can",
-                                style: TextStyle(
-                                    color: Colors.black54, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(width: 15),
-                              GestureDetector(
-                                onTap: () {
-                                  print(MediaQuery.of(context).size.width);
-                                },
-                                child: const Text(
-                                  "Register here!",
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            const Text(
+                              "If you don't have an account",
+                              style: TextStyle(
+                                  color: Colors.black54, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  "You can",
                                   style: TextStyle(
-                                      color: Colors.deepPurple,
-                                      fontWeight: FontWeight.bold),
+                                      color: Colors.black54, fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            'images/illustration-2.png',
-                            width: 300,
-                          ),
-                        ],
+                                const SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () {
+                                    print(MediaQuery.of(context).size.width);
+                                  },
+                                  child: const Text(
+                                    "Register here!",
+                                    style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              'images/illustration-2.png',
+                              width: 300,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -278,6 +288,7 @@ class _SignupState extends State<Signup> {
                                 ),
                                 child: ElevatedButton(
                                   onPressed: () async {
+
                                     // Firebase Login flutter
                                     try {
                                       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(

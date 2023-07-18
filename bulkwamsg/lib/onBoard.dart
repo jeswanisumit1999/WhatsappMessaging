@@ -211,7 +211,7 @@ class _OnboardState extends State<Onboard> {
                                     });
                                     print(response.statusCode);
                                     print(response.data);
-                                    if(response.statusCode == 201){
+                                    if(response.statusCode == 200){
                                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
                                     }
                                   },

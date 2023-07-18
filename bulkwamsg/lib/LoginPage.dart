@@ -18,10 +18,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   Dio dio = new Dio();
+
   final baseUrl = "http://ec2-16-170-205-112.eu-north-1.compute.amazonaws.com:5000/";
 
   String email = "";
   String password = "";
+  bool validate_Email = true;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -82,6 +84,20 @@ class _LoginState extends State<Login> {
     return user;
   }
 
+  ToastFun(String msg){
+    Fluttertoast.showToast(
+        msg: msg,
+        // webShowClose: true,
+        webPosition: "right",
+        toastLength: Toast.LENGTH_LONG, //duration for message to show
+        gravity: ToastGravity.CENTER, //where you want to show, top, bottom
+        timeInSecForIosWeb: 3, //for iOS only
+        backgroundColor: Colors.red, //background Color for message
+        // textColor: Colors.white, //message text color
+        fontSize: 16.0 //message font size
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -115,10 +131,18 @@ class _LoginState extends State<Login> {
                     GestureDetector(
                         onTap: (){
                           setState(() {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Signup()));
-                            signIn = false;
+                           signIn = false;
                             print(signIn);
                           });
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (_, __, ___) => Signup(),
+                              transitionDuration: const Duration(seconds: 0),
+                            ),
+                          );
+                         // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Signup()));
+
                         },
                         child: _menuItem('Register', false)
                     ),
@@ -128,55 +152,65 @@ class _LoginState extends State<Login> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 360,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Sign In to \nMy Application',
-                            style: TextStyle(
-                              fontSize: 45,
-                              fontWeight: FontWeight.bold,
+                    Visibility(
+                      visible: MediaQuery.of(context).size.width > 900,
+                      child: Container(
+                        width: 360,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Sign In to \nMy Application',
+                              style: TextStyle(
+                                fontSize: 45,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          const Text(
-                            "If you don't have an account",
-                            style: TextStyle(
-                                color: Colors.black54, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                "You can",
-                                style: TextStyle(
-                                    color: Colors.black54, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(width: 15),
-                              GestureDetector(
-                                onTap: () {
-                                  print(MediaQuery.of(context).size.width);
-                                },
-                                child: const Text(
-                                  "Register here!",
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            const Text(
+                              "If you don't have an account",
+                              style: TextStyle(
+                                  color: Colors.black54, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  "You can",
                                   style: TextStyle(
-                                      color: Colors.deepPurple,
-                                      fontWeight: FontWeight.bold),
+                                      color: Colors.black54, fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            'images/illustration-2.png',
-                            width: 300,
-                          ),
-                        ],
+                                const SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (_, __, ___) => Signup(),
+                                        transitionDuration: const Duration(seconds: 0),
+                                      ),
+                                    );
+                                    print(MediaQuery.of(context).size.width);
+                                  },
+                                  child: const Text(
+                                    "Register here!",
+                                    style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              'images/illustration-2.png',
+                              width: 300,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -199,10 +233,16 @@ class _LoginState extends State<Login> {
                           children: [
                             TextField(
                               onChanged: (val){
-                                email = val;
+                                setState(() {
+                                  email = val;
+                                  validate_Email = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                      .hasMatch(email);
+                                  ;
+                                  print(validate_Email);
+                                });
                               },
                               decoration: InputDecoration(
-                                hintText: 'Enter email or Phone number',
+                                hintText: 'Enter your emailId',
                                 filled: true,
                                 fillColor: Colors.blueGrey[50],
                                 labelStyle: TextStyle(fontSize: 12),
@@ -262,7 +302,7 @@ class _LoginState extends State<Login> {
                               ),
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  if(password != ""){
+                                  if(password != "" && email !="" && validate_Email == true){
                                     try {
                                       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                                           email: email,
@@ -277,20 +317,11 @@ class _LoginState extends State<Login> {
                                     }
                                     final token = await _auth.currentUser?.getIdToken();
                                     dio.options.headers["Authorization"] = "Bearer $token";
+                                    dio.options.headers["Access-Control-Allow-Origin"] = "*";
                                     // print("TOKEN : $token");
-                                    var _response = await dio.get("${baseUrl}company", data: {});
+                                    var _response = await dio.get("${baseUrl}users/signin", data: {});
                                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                                    Fluttertoast.showToast(
-                                        msg: "Login Success !!!",
-                                        // webShowClose: true,
-                                        webPosition: "right",
-                                        toastLength: Toast.LENGTH_LONG, //duration for message to show
-                                        gravity: ToastGravity.CENTER, //where you want to show, top, bottom
-                                        timeInSecForIosWeb: 3, //for iOS only
-                                        backgroundColor: Colors.red, //background Color for message
-                                        // textColor: Colors.white, //message text color
-                                        fontSize: 16.0 //message font size
-                                    );
+                                    ToastFun("Login Success!!");
                                     if(_response.statusCode == 404){
                                       //onboard
                                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Onboard()));
@@ -299,6 +330,15 @@ class _LoginState extends State<Login> {
                                       //Dashboard
                                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
                                     }
+                                  }
+                                  else if(password == ""){
+                                    ToastFun("Please Enter Password!!");
+                                  }
+                                  else if(email == ""){
+                                    ToastFun("Please Enter EmailId !!");
+                                  }
+                                  else if(validate_Email == false){
+                                    ToastFun("Please Verify Your EmailId!!");
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
