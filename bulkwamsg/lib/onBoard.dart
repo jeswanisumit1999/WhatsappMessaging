@@ -201,7 +201,7 @@ class _OnboardState extends State<Onboard> {
                                     final token = await _auth.currentUser?.getIdToken();
                                     print("TOKEN : $token");
                                     dio.options.headers["Authorization"] = "Bearer $token";
-                                    // print("TOKEN : $token");
+                                    //print("TOKEN : $token");
                                     var email = (await _auth.currentUser!.email)!;
                                     var response = await dio.post("${baseUrl}companies", data: {
                                       "name": companyName,

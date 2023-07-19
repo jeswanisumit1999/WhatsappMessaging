@@ -98,8 +98,29 @@ class _LoginState extends State<Login> {
     );
   }
 
+  redirect() async {
+    final token = await _auth.currentUser?.getIdToken();
+    dio.options.headers["Authorization"] = "Bearer $token";
+    // dio.options.headers["Access-Control-Allow-Origin"] = "*";
+    print("TOKEN : $token");
+    var _response = await dio.post("${baseUrl}users/signin");
+    ToastFun("Login Success!!");
+    if(_response.statusCode == 404){
+      //onboard
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Onboard()));
+    }
+    if(_response.statusCode == 200){
+      //Dashboard
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
+    }
+  }
+
   @override
   void initState() {
+    print(_auth.currentUser?.email);
+    if(_auth.currentUser?.uid != null){
+      redirect();
+    }
     super.initState();
   }
 
@@ -317,9 +338,9 @@ class _LoginState extends State<Login> {
                                     }
                                     final token = await _auth.currentUser?.getIdToken();
                                     dio.options.headers["Authorization"] = "Bearer $token";
-                                    dio.options.headers["Access-Control-Allow-Origin"] = "*";
-                                    // print("TOKEN : $token");
-                                    var _response = await dio.get("${baseUrl}users/signin", data: {});
+                                    // dio.options.headers["Access-Control-Allow-Origin"] = "*";
+                                    print("TOKEN : $token");
+                                    var _response = await dio.post("${baseUrl}users/signin");
                                     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                                     ToastFun("Login Success!!");
                                     if(_response.statusCode == 404){
@@ -328,6 +349,7 @@ class _LoginState extends State<Login> {
                                     }
                                     if(_response.statusCode == 200){
                                       //Dashboard
+
                                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
                                     }
                                   }
