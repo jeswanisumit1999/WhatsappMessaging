@@ -58,6 +58,7 @@ class _TemplatesState extends State<Templates> {
                     onTap: (){
                       setState(() {
                         selectedTemplateId = oldTemplates[i]["template_id"];
+                        selectedTemplateData = oldTemplates[i];
                         // oldTemplates[i]["selected"] = true;
                       });
                     },
@@ -77,8 +78,7 @@ class _TemplatesState extends State<Templates> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(oldTemplates[i]["message_template"]),
                             ),
-                            const Expanded(
-                              child:  Row(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Padding(
@@ -86,7 +86,6 @@ class _TemplatesState extends State<Templates> {
                                     child: Text("10:00 PM",textAlign: TextAlign.end, style: TextStyle(color: Colors.grey),),
                                   ),
                                 ],
-                              ),
                             ),
                           ],
                         ),

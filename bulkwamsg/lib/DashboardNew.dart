@@ -1,4 +1,5 @@
 import 'package:bulkwamsg/GlobalVariables.dart';
+import 'package:bulkwamsg/Send_Message.dart';
 import 'package:bulkwamsg/widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +17,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Dio dio = new Dio();
   bool companyDtailsLoader = true;
-  int selectedTab = 0;
+
   getCompanyDetails() async {
     final token = await getToken();
     dio.options.headers["Authorization"] = "Bearer $token";
@@ -121,7 +122,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             height: MediaQuery.of(context).size.height,
-            child: selectedTab == 0 ? Templates() : selectedTab == 1 ? Text("Select Recipients") : selectedTab == 2 ? Text("Send Message") : SizedBox(),
+            child: selectedTab == 0 ? Templates() : selectedTab == 1 ? Text("Select Recipients") : selectedTab == 2 ? SendMessage() : SizedBox(),
           ): const Center(child: CircularProgressIndicator()))
         ],
       ),

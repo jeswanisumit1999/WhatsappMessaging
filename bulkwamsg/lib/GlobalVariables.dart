@@ -8,6 +8,8 @@ var companyCredits;
 var companyId;
 
 var selectedTemplateId;
+var selectedTemplateData;
+int selectedTab = 0;
 
 class URLS{
   String userSignin = "$baseUrl/users/signin";
