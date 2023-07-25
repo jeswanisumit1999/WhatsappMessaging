@@ -1,12 +1,13 @@
-import 'package:bulkwamsg/Dashboard.dart';
-import 'package:bulkwamsg/RestApi.dart';
+import 'package:bulkwamsg/DashboardNew.dart';
 import 'package:bulkwamsg/Signup.dart';
 import 'package:bulkwamsg/onBoard.dart';
+import 'package:bulkwamsg/widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'GlobalVariables.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,8 +19,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   Dio dio = new Dio();
-
-  final baseUrl = "http://ec2-16-170-205-112.eu-north-1.compute.amazonaws.com:5000/";
 
   String email = "";
   String password = "";
@@ -41,7 +40,7 @@ class _LoginState extends State<Login> {
                 color: isActive ? Colors.deepPurple : Colors.grey,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 6,
             ),
             isActive
@@ -52,7 +51,7 @@ class _LoginState extends State<Login> {
                 borderRadius: BorderRadius.circular(30),
               ),
             )
-                : SizedBox()
+                : const SizedBox()
           ],
         ),
       ),
@@ -80,37 +79,33 @@ class _LoginState extends State<Login> {
     UserCredential result = await _auth.signInWithCredential(credential);
     User? user = result.user;
     print(_auth.currentUser);
-    var currentUserDetails = _auth.currentUser;
     return user;
   }
 
-  ToastFun(String msg){
-    Fluttertoast.showToast(
-        msg: msg,
-        // webShowClose: true,
-        webPosition: "right",
-        toastLength: Toast.LENGTH_LONG, //duration for message to show
-        gravity: ToastGravity.CENTER, //where you want to show, top, bottom
-        timeInSecForIosWeb: 3, //for iOS only
-        backgroundColor: Colors.red, //background Color for message
-        // textColor: Colors.white, //message text color
-        fontSize: 16.0 //message font size
-    );
-  }
 
   redirect() async {
     final token = await _auth.currentUser?.getIdToken();
     dio.options.headers["Authorization"] = "Bearer $token";
     // dio.options.headers["Access-Control-Allow-Origin"] = "*";
     print("TOKEN : $token");
-    var _response = await dio.post("${baseUrl}users/signin");
-    ToastFun("Login Success!!");
+    var _response;
+    try{
+      _response = await dio.post(baseUrl + "/users/signin");
+      print(_response.statusCode);
+    }
+    catch(e){
+      ToastFun("Something went wrong !!!!!");
+      print (e);
+    };
+
+    print(_response.data);
     if(_response.statusCode == 404){
       //onboard
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Onboard()));
     }
     if(_response.statusCode == 200){
       //Dashboard
+      ToastFun("Login Success!!");
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
     }
   }
@@ -119,6 +114,7 @@ class _LoginState extends State<Login> {
   void initState() {
     print(_auth.currentUser?.email);
     if(_auth.currentUser?.uid != null){
+      print("redirecting.....");
       redirect();
     }
     super.initState();
@@ -175,7 +171,7 @@ class _LoginState extends State<Login> {
                   children: [
                     Visibility(
                       visible: MediaQuery.of(context).size.width > 900,
-                      child: Container(
+                      child: SizedBox(
                         width: 360,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,18 +334,16 @@ class _LoginState extends State<Login> {
                                     }
                                     final token = await _auth.currentUser?.getIdToken();
                                     dio.options.headers["Authorization"] = "Bearer $token";
-                                    // dio.options.headers["Access-Control-Allow-Origin"] = "*";
                                     print("TOKEN : $token");
-                                    var _response = await dio.post("${baseUrl}users/signin");
-                                    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                                    ToastFun("Login Success!!");
+                                    var _response = await dio.post("${baseUrl}/users/signin");
+
                                     if(_response.statusCode == 404){
                                       //onboard
                                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Onboard()));
                                     }
                                     if(_response.statusCode == 200){
                                       //Dashboard
-
+                                      ToastFun("Login Success!!");
                                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
                                     }
                                   }

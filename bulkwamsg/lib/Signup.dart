@@ -1,8 +1,8 @@
 import 'package:bulkwamsg/LoginPage.dart';
 import 'package:bulkwamsg/onBoard.dart';
+import 'package:bulkwamsg/widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -77,7 +77,6 @@ class _SignupState extends State<Signup> {
     UserCredential result = await _auth.signInWithCredential(credential);
     User? user = result.user;
     print(_auth.currentUser);
-    var currentUserDetails = _auth.currentUser;
     return user;
   }
 
@@ -134,7 +133,7 @@ class _SignupState extends State<Signup> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Sign In to \nMy Application',
+                              'Lets \nget onboarded',
                               style: TextStyle(
                                 fontSize: 45,
                                 fontWeight: FontWeight.bold,
@@ -144,7 +143,7 @@ class _SignupState extends State<Signup> {
                               height: 30,
                             ),
                             const Text(
-                              "If you don't have an account",
+                              "If you alredy have an account",
                               style: TextStyle(
                                   color: Colors.black54, fontWeight: FontWeight.bold),
                             ),
@@ -161,10 +160,16 @@ class _SignupState extends State<Signup> {
                                 const SizedBox(width: 15),
                                 GestureDetector(
                                   onTap: () {
-                                    print(MediaQuery.of(context).size.width);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (_, __, ___) => Login(),
+                                        transitionDuration: const Duration(seconds: 0),
+                                      ),
+                                    );
                                   },
                                   child: const Text(
-                                    "Register here!",
+                                    "Sign-in here!",
                                     style: TextStyle(
                                         color: Colors.deepPurple,
                                         fontWeight: FontWeight.bold),
@@ -300,8 +305,10 @@ class _SignupState extends State<Signup> {
                                     } on FirebaseAuthException catch (e) {
                                       if (e.code == 'weak-password') {
                                         print('The password provided is too weak.');
+                                        ToastFun("Password provided is too weak");
                                       } else if (e.code == 'email-already-in-use') {
                                         print('The account already exists for that email.');
+                                        ToastFun("Account already exists");
                                       }
                                     } catch (e) {
                                       print(e);

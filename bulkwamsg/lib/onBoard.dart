@@ -1,7 +1,6 @@
-import 'package:bulkwamsg/Dashboard.dart';
+import 'package:bulkwamsg/CreteCompany.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Onboard extends StatefulWidget {
@@ -14,12 +13,11 @@ class Onboard extends StatefulWidget {
 class _OnboardState extends State<Onboard> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // String email = "";
-  String companyName = "";
-  String description = "";
+  String userName = "";
   String phoneNumber = "";
 
   Dio dio = new Dio();
-  final baseUrl = "http://ec2-16-170-205-112.eu-north-1.compute.amazonaws.com:5000/";
+  final baseUrl = "http://ec2-13-51-150-73.eu-north-1.compute.amazonaws.com:5000";
 
 
   @override
@@ -110,10 +108,10 @@ class _OnboardState extends State<Onboard> {
                             children: [
                               TextField(
                                 onChanged: (val){
-                                  companyName = val;
+                                  userName = val;
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'Name of your company',
+                                  hintText: 'Your full Name',
                                   filled: true,
                                   fillColor: Colors.blueGrey[50],
                                   labelStyle: TextStyle(fontSize: 12),
@@ -128,33 +126,33 @@ class _OnboardState extends State<Onboard> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 30),
+                              // SizedBox(height: 30),
 
-                              TextField(
-                                onChanged: (val){
-                                  description = val;
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'What is it about ... (description)',
-                                  // counterText: 'Forgot password?',
-                                  suffixIcon: const Icon(
-                                    Icons.visibility_off_outlined,
-                                    color: Colors.grey,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.blueGrey[50],
-                                  labelStyle: TextStyle(fontSize: 12),
-                                  contentPadding: EdgeInsets.only(left: 30),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.blueGrey),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.blueGrey),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                              ),
+                              // TextField(
+                              //   onChanged: (val){
+                              //     description = val;
+                              //   },
+                              //   decoration: InputDecoration(
+                              //     hintText: 'What is it about ... (description)',
+                              //     // counterText: 'Forgot password?',
+                              //     suffixIcon: const Icon(
+                              //       Icons.visibility_off_outlined,
+                              //       color: Colors.grey,
+                              //     ),
+                              //     filled: true,
+                              //     fillColor: Colors.blueGrey[50],
+                              //     labelStyle: TextStyle(fontSize: 12),
+                              //     contentPadding: EdgeInsets.only(left: 30),
+                              //     enabledBorder: OutlineInputBorder(
+                              //       borderSide: BorderSide(color: Colors.blueGrey),
+                              //       borderRadius: BorderRadius.circular(15),
+                              //     ),
+                              //     focusedBorder: OutlineInputBorder(
+                              //       borderSide: BorderSide(color: Colors.blueGrey),
+                              //       borderRadius: BorderRadius.circular(15),
+                              //     ),
+                              //   ),
+                              // ),
                               SizedBox(height: 40),
 
                               TextField(
@@ -203,16 +201,15 @@ class _OnboardState extends State<Onboard> {
                                     dio.options.headers["Authorization"] = "Bearer $token";
                                     //print("TOKEN : $token");
                                     var email = (await _auth.currentUser!.email)!;
-                                    var response = await dio.post("${baseUrl}companies", data: {
-                                      "name": companyName,
-                                      "description": description,
+                                    var response = await dio.post("${baseUrl}/users/signup", data: {
+                                      "name": userName,
                                       "primaryEmail": email,
                                       "primaryPhoneNumber": phoneNumber
                                     });
                                     print(response.statusCode);
                                     print(response.data);
                                     if(response.statusCode == 200){
-                                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
+                                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CreateCompany()));
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
