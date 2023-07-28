@@ -1,4 +1,5 @@
 import 'package:bulkwamsg/GlobalVariables.dart';
+import 'package:bulkwamsg/Recipients.dart';
 import 'package:bulkwamsg/Send_Message.dart';
 import 'package:bulkwamsg/widgets.dart';
 import 'package:dio/dio.dart';
@@ -122,7 +123,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             height: MediaQuery.of(context).size.height,
-            child: selectedTab == 0 ? Templates() : selectedTab == 1 ? Text("Select Recipients") : selectedTab == 2 ? SendMessage() : SizedBox(),
+            child: selectedTab == 0 ? Templates() : selectedTab == 1 ? Recipients() : selectedTab == 2 ? SendMessage() : SizedBox(),
           ): const Center(child: CircularProgressIndicator()))
         ],
       ),

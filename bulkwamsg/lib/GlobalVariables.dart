@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
-const baseUrl = "http://ec2-13-51-150-73.eu-north-1.compute.amazonaws.com:5000";
+const baseUrl = "http://ec2-16-171-181-186.eu-north-1.compute.amazonaws.com:5000";
 
 var companyName;
 var companyCredits;
@@ -9,6 +9,7 @@ var companyId;
 
 var selectedTemplateId;
 var selectedTemplateData;
+List selectedRecipients = [];
 int selectedTab = 0;
 
 class URLS{

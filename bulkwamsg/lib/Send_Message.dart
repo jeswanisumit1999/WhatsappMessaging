@@ -27,8 +27,7 @@ class _SendMessageState extends State<SendMessage> {
       width: 1000,
       child:MediaQuery.of(context).size.width >= 800? Row(
         children: [
-
-              Expanded(
+          Expanded(
                 child: Column(
                   children: [
                     ListTile(
@@ -75,8 +74,6 @@ class _SendMessageState extends State<SendMessage> {
                   ],
                 ),
               ),
-
-
           Expanded(
             child: Column(
               children: [
@@ -144,7 +141,6 @@ class _SendMessageState extends State<SendMessage> {
               ],
             ),
           ),
-
         ],
       ):Column(
         children: [
