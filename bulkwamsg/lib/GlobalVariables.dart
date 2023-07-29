@@ -10,7 +10,7 @@ var companyId;
 var selectedTemplateId;
 var selectedTemplateData;
 List selectedRecipients = [];
-int selectedTab = 0;
+
 
 class URLS{
   String userSignin = "$baseUrl/users/signin";
