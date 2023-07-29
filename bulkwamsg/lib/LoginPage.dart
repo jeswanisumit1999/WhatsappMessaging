@@ -88,6 +88,9 @@ class _LoginState extends State<Login> {
     dio.options.headers["Authorization"] = "Bearer $token";
     // dio.options.headers["Access-Control-Allow-Origin"] = "*";
     print("TOKEN : $token");
+   // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Dashboard()));
+
+
     var _response;
     try{
       _response = await dio.post(baseUrl + "/users/signin");
@@ -97,6 +100,8 @@ class _LoginState extends State<Login> {
       ToastFun("Something went wrong !!!!!");
       print (e);
     };
+
+
 
     print(_response.data);
     if(_response.statusCode == 404){
