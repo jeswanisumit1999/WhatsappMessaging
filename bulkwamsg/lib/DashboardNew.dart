@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bulkwamsg/GlobalVariables.dart';
 import 'package:bulkwamsg/Recipients.dart';
 import 'package:bulkwamsg/Send_Message.dart';
@@ -18,7 +20,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Dio dio = new Dio();
   bool companyDtailsLoader = true;
-
+  int selectedTab = 0;
   getCompanyDetails() async {
     final token = await getToken();
     dio.options.headers["Authorization"] = "Bearer $token";
@@ -41,6 +43,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     // TODO: implement initState
     getCompanyDetails();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) => setState((){}));
   }
   @override
   Widget build(BuildContext context) {
@@ -123,7 +126,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             height: MediaQuery.of(context).size.height,
-            child: selectedTab == 0 ? Templates() : selectedTab == 1 ? Recipients() : selectedTab == 2 ? SendMessage() : SizedBox(),
+            child: selectedTab == 0 ? Templates() : selectedTab == 1 ? Recipients() : selectedTab == 2 ? SendMessage(selectedTab: selectedTab,) : SizedBox(),
           ): const Center(child: CircularProgressIndicator()))
         ],
       ),
