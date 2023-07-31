@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_network/image_network.dart';
 
 import 'GlobalVariables.dart';
 
@@ -28,7 +29,7 @@ class _TemplatesState extends State<Templates> {
     try {
       // Pick an image file using file_picker package
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.image,
+        type: FileType.video,
       );
 
       // If user cancels the picker, do nothing
@@ -57,6 +58,8 @@ class _TemplatesState extends State<Templates> {
     if(response.statusCode == 200){
      setState(() {
        oldTemplates = response.data;
+       Iterable reversedTemplates = oldTemplates.reversed;
+       oldTemplates = reversedTemplates.toList();
      });
     }
     else{
@@ -105,11 +108,35 @@ class _TemplatesState extends State<Templates> {
 
 
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 oldTemplates[i]["attachment_filename"]!=null ?
                                 Padding(padding:const EdgeInsets.all(8.0),
-                                  child: Image.network("${baseUrl}/static/${oldTemplates[i]["attachment_filename"]}".replaceAll(" ","%20")
-                                  ),
+                                  child: ImageNetwork(
+                                    image: "$baseUrl/static/${oldTemplates[i]["attachment_filename"]}".replaceAll(" ","%20"),
+                                    height: 200,
+                                    width: 200,
+                                    duration: 1500,
+                                    curve: Curves.easeIn,
+                                    onPointer: true,
+                                    debugPrint: false,
+                                    fullScreen: false,
+                                    fitAndroidIos: BoxFit.cover,
+                                    fitWeb: BoxFitWeb.cover,
+                                    // borderRadius: BorderRadius.circular(70),
+                                    onLoading: const CircularProgressIndicator(
+                                      color: Colors.indigoAccent,
+                                    ),
+                                    onError: const Icon(
+                                      Icons.error,
+                                      color: Colors.red,
+                                    ),
+                                    onTap: () {
+                                      debugPrint("©gabriel_patrick_souza");
+                                    },
+                                  )
+                                  // Image(image: NetworkImage("${baseUrl}/static/${oldTemplates[i]["attachment_filename"]}".replaceAll(" ","%20")
+                                  // ),),
                                 ): SizedBox(),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -117,12 +144,12 @@ class _TemplatesState extends State<Templates> {
                                 ),
                               ],
                             ),
-                              Row(
+                              const Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.all(8.0),
-                                    child: Text("10:00 PM",textAlign: TextAlign.end, style: TextStyle(color: Colors.grey),),
+                                    child: Text("Just Now",textAlign: TextAlign.end, style: TextStyle(color: Colors.grey),),
                                   ),
                                 ],
                             ),
@@ -266,6 +293,7 @@ class _TemplatesState extends State<Templates> {
                     setState(() {
                       _messageTextController.text = "";
                       _templateTitleTextController.text = "";
+                      _imageFile = null;
                     });
                     fetchTemplates();
                   }

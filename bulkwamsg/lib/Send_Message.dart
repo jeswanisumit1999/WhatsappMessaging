@@ -12,6 +12,7 @@ import 'package:qr/qr.dart';
 class SendMessage extends StatefulWidget {
   SendMessage({Key? key, required this.selectedTab}) : super(key: key);
   var selectedTab;
+ 
   @override
   _SendMessageState createState() => _SendMessageState();
 }
@@ -19,7 +20,8 @@ class SendMessage extends StatefulWidget {
 
 class _SendMessageState extends State<SendMessage> {
   Dio dio = new Dio();
-  var QrText;
+  String qrText = "";
+  bool qrLoading = false;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -87,14 +89,76 @@ class _SendMessageState extends State<SendMessage> {
     );
   }
   startSending(){
-    return const Column(
+    return Column(
       children: [
         Text("Generate QR", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),),
         Divider(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const Text("Link your WhatsApp to start sending messages", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),),
+            const Text("Note : The QR is valid for 50 sec once it is generated", style: TextStyle(fontSize: 14),),
             SizedBox(height: 20,),
+            qrText == "" ? Container(height: 200, width: 200, color: Colors.black12, child: qrLoading?Center(child: const CircularProgressIndicator()):Center(child: const Text("Click 'Generate QR'")),) :
+            PrettyQr(
+              //image: AssetImage('images/twitter.png'),
+              //typeNumber: 3,
+              size: 200,
+              data: qrText,
+              errorCorrectLevel: QrErrorCorrectLevel.M,
+              roundEdges: true,
+            ),
+            SizedBox(height: 20,),
+            Row(
+              children: [
+                Expanded(child: ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      qrText = "";
+                      qrLoading = true;
+                    });
+                    if(selectedTemplateData == null){
+                      ToastFun("Please Select a template");
+                    }
+                    else if(selectedRecipients.isEmpty){
+                      ToastFun("Please Select recipients");
+                    }
+                    else{
+                      var recipientIds = [];
+                      for(var recipient in selectedRecipients){
+                        recipientIds.add(recipient["recipient_id"]);
+                      }
+
+                      final token = await getToken();
+                      try{
+                        dio.options.headers["Authorization"] = "Bearer $token";
+                        print("TOKEN : $token");
+                        var response = await dio.post("${baseUrl}/companies/queue-message",
+                            data: {
+                              "recipient_ids":recipientIds,
+                              "template_id":selectedTemplateData["template_id"],
+                            });
+                        print(response.statusCode);
+                        if(response.statusCode == 200){
+                          setState(() {
+                            qrText = response.data;
+                          });
+                        }
+                        else{
+                          ToastFun("Unable to fetch old template");
+                        }
+                      } catch(e){
+                        print(e);
+                      }
+                      setState(() {
+                        qrLoading = false;
+                      });
+                    }
+                  },
+                  child: const Text("Generate QR"),
+                )),
+              ],
+            )
           ],
         )
       ],
